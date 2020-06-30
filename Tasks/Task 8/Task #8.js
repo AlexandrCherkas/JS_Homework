@@ -1,51 +1,38 @@
 function Animal(name) {
+    this.name = name;
+
     var foodAmount = 50;
+
+    var self = this;
 
     function formatFoodAmount() {
         return foodAmount + ' гр.';
     }
 
-    this.dailyNorm = function(amount) {
-        if (foodAmount > 50 && foodAmount < 500) return formatFoodAmount();
-        if(foodAmount < 50 || foodAmount > 500) {
-            alert('Ошибка! Пушистый недоел или переел!')
+    this.dailyNorm = function (amount) {
+        if (!arguments.length) return formatFoodAmount();
+
+        if (amount < 50 || amount > 500) {
+            return 'Пушисты. Переел или не поел';
         }
         foodAmount = amount;
     };
 
-    this.name = name;
-    this.feed = function() {
-        console.log('Насыпаем в миску ' + this.dailyNorm() + ' корма');
-    };
-
-    var self = this;
-    this.animalFeed = function () {
-        return self.feed();
+    self.feed = function () {
+        console.log('Насыпаем в миску ' + self.dailyNorm() + ' корма.');
     };
 }
-
 function Cat(name) {
     Animal.apply(this, arguments);
-
-    var chain = this;
-
-    chain.feed = function() {
-        console.log('Насыпаем в миску ' + this.dailyNorm() + ' корма.' + '\r\n' + 'Пушистый доволен ^_^');
-        return chain;
+    var animalFeed = this.feed;
+    this.feed = function() {
+        animalFeed();
+        console.log('Пушистый доволен ^_^');
+        return this;
     };
 
-    chain.stroke = function () {
-        console.log('Гладим кота.');
-        return chain;
+    this.stroke = function () {
+        console.log('Гладим пушистика');
+        return this;
     };
 }
-
-var catname = new Cat ('Барсик');
-catname.stroke().feed().feed();
-
-console.log(catname .name);
-
-console.log(catname.dailyNorm(600));
-console.log(catname.animalFeed());
-
-catname = null;
